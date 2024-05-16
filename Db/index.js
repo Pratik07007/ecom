@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 //Databse Connection
+
 try {
   mongoose.connect(
     "mongodb+srv://np03cs4a230180:9AZhbah9y2aQDrrZ@pratikcluster.xg6nhfe.mongodb.net/ecom"
@@ -31,6 +32,8 @@ const AllProductsSchema = mongoose.Schema({
   images: [String],
   desc: String,
 });
+
+//creating model
 
 const AllProducts = mongoose.model("Products", AllProductsSchema);
 
