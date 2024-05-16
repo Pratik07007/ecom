@@ -1,6 +1,6 @@
 const express = require("express");
-const adminCredentialsValidiation = require("../middleware/ZodValidiation");
 const { admin } = require("../Db");
+const { adminCredentialsValidiation } = require("../middleware/ZodValidiation");
 const app = express();
 
 app.use(express.json());
