@@ -11,6 +11,19 @@ try {
 }
 
 //Defining Schema
+
+const adminSchema = mongoose.Schema({
+  email: String,
+  password: String,
+});
+
+const userSchema = mongoose.Schema({
+  name: String,
+  phone: String,
+  email: String,
+  email: String,
+});
+
 const AllProductsSchema = mongoose.Schema({
   name: String,
   originalPrice: Number,
@@ -21,10 +34,8 @@ const AllProductsSchema = mongoose.Schema({
 
 const AllProducts = mongoose.model("Products", AllProductsSchema);
 
-AllProducts.create({
-  name:"Pratik",
-  originalPrice: 123,
-  discountedPrice: 1234,
-  images: ["asfaf","afaf","asfasf"],
-  desc: "HEllooo",
-})
+const admin = mongoose.model("Admin", adminSchema);
+
+const user = mongoose.model("User", userSchema);
+
+module.exports = { AllProducts, admin, user };
