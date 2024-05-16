@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
   name: String,
   phone: String,
   email: String,
-  email: String,
+  password: String,
 });
 
 const AllProductsSchema = mongoose.Schema({
