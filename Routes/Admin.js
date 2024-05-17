@@ -1,6 +1,6 @@
 const express = require("express");
-const { admin } = require("../Db");
-const jwt = require("jsonwebtoken")
+const { admin, promo } = require("../Db");
+const jwt = require("jsonwebtoken");
 const { adminCredentialsValidiation } = require("../middleware/ZodValidiation");
 const app = express();
 
@@ -30,6 +30,33 @@ app.post("/adminLogin", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.post("/addPromo", async (req, res) => {
+  const { cappedAt, code, discount, minspend } = req.body;
+  const response = await promo.findOne({ code });
+  if (response) {
+    res.status(400).json({ msg: `Code:${code} already exist` });
+  } else {
+    promo
+      .create({
+        cappedAt,
+        code,
+        discount,
+        minspend,
+      })
+      .then(() =>
+        res.status(400).json({ msg: `Code:${code} added succesfully` })
+      );
+  }
+});
+
+app.get("/promos", (req, res) => {
+  try {
+    promo.find({}).then((resp) => res.json(resp));
+  } catch (error) {
+    res.status(403).json({ msg: "Something Went Wrong" });
   }
 });
 
