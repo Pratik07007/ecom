@@ -25,7 +25,7 @@ const userSchema = mongoose.Schema({
   password: String,
 });
 
-const AllProductsSchema = mongoose.Schema({
+const allProductsSchema = mongoose.Schema({
   name: String,
   originalPrice: Number,
   discountedPrice: Number,
@@ -33,12 +33,20 @@ const AllProductsSchema = mongoose.Schema({
   desc: String,
 });
 
+const promoCodesSchema = mongoose.Schema({
+  code: String,
+  discount: Number,
+  cappedAt: Number,
+  minspend: Number,
+});
 //creating model
 
-const AllProducts = mongoose.model("Products", AllProductsSchema);
+const AllProducts = mongoose.model("Products", allProductsSchema);
 
 const admin = mongoose.model("Admin", adminSchema);
 
 const user = mongoose.model("User", userSchema);
 
-module.exports = { AllProducts, admin, user };
+const promo = mongoose.model("Promo", promoCodesSchema);
+
+module.exports = { AllProducts, admin, user, promo };
