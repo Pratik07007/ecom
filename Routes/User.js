@@ -27,7 +27,6 @@ app.post("/userLogin", async (req, res) => {
   const { email, password } = req.body;
   try {
     const response = await user.findOne({ email, password });
-    console.log(response)
     if (response) {
       const token = jwt.sign({ email }, "12345");
       res.status(200).json({ token });
