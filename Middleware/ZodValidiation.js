@@ -22,10 +22,8 @@ const adminCredentialsValidiation = (req, res, next) => {
     res.status(400).json({ error: response.error.issues[0].message });
   }
 };
-
 const userCredentialsValidiation = (req, res, next) => {
   const body = req.body;
-  console.log(body)
   const userSchema = zod.object({
     name: zod.string(),
     phone: zod.string(),

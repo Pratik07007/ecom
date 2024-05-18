@@ -52,12 +52,6 @@ app.post("/addPromo", async (req, res) => {
   }
 });
 
-app.get("/promos", (req, res) => {
-  try {
-    promo.find({}).then((resp) => res.json(resp));
-  } catch (error) {
-    res.status(403).json({ msg: "Something Went Wrong" });
-  }
-});
+
 
 app.listen(3000);
