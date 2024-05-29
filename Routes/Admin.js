@@ -72,9 +72,8 @@ app.post("/addProducts", async (req, res) => {
     const email = jwt.verify(token, process.env.JWT_SECRET).email;
     const dbResposne = admin.findOne({ email });
     if (dbResposne) {
-      const findName = await AllProducts.findOne({ name });
-      const finddesc = await AllProducts.findOne({ desc });
-      if (findName && finddesc) {
+      const product = await AllProducts.findOne({ name, desc });
+      if (product) {
         res.json({ msg: "Product already in the database" });
       } else {
         AllProducts.create({
@@ -92,7 +91,5 @@ app.post("/addProducts", async (req, res) => {
       msg: "Permission Denied: You need to be an admin to perform this task",
     });
   }
-
-  // need correction here
 });
 app.listen(PORT);
