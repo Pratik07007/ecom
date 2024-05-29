@@ -1,5 +1,5 @@
 const express = require("express");
-const { admin, promo } = require("../Db");
+const { admin, promo, AllProducts } = require("../Db");
 const jwt = require("jsonwebtoken");
 const { adminCredentialsValidiation } = require("../middleware/ZodValidiation");
 const app = express();
@@ -65,4 +65,34 @@ app.post("/addPromo", async (req, res) => {
   }
 });
 
+app.post("/addProducts", async (req, res) => {
+  const { name, originalPrice, discountedPrice, desc, images } = req.body;
+  const token = req.headers.authorization;
+  try {
+    const email = jwt.verify(token, process.env.JWT_SECRET).email;
+    const dbResposne = admin.findOne({ email });
+    if (dbResposne) {
+      const findName = await AllProducts.findOne({ name });
+      const finddesc = await AllProducts.findOne({ desc });
+      if (findName && finddesc) {
+        res.json({ msg: "Product already in the database" });
+      } else {
+        AllProducts.create({
+          name,
+          originalPrice,
+          discountedPrice,
+          desc,
+          images,
+        });
+        res.status(200).json({ msg: "Product Created Scccesfully" });
+      }
+    }
+  } catch (error) {
+    res.json({
+      msg: "Permission Denied: You need to be an admin to perform this task",
+    });
+  }
+
+  // need correction here
+});
 app.listen(PORT);
