@@ -67,7 +67,7 @@ app.post("/addPromo", async (req, res) => {
 });
 
 app.post("/addProducts", async (req, res) => {
-  const { name, originalPrice, discountedPrice, desc, images } = req.body;
+  const { name, originalPrice, discountedPrice, desc, images, category } = req.body;
   const token = req.headers.authorization;
   try {
     const email = jwt.verify(token, process.env.JWT_SECRET).email;
@@ -83,6 +83,7 @@ app.post("/addProducts", async (req, res) => {
           discountedPrice,
           desc,
           images,
+          category
         });
         res.status(200).json({ msg: "Product Created Scccesfully" });
       }
@@ -93,4 +94,5 @@ app.post("/addProducts", async (req, res) => {
     });
   }
 });
+
 app.listen(PORT);

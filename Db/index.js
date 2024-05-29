@@ -29,6 +29,7 @@ const allProductsSchema = mongoose.Schema({
   discountedPrice: Number,
   images: [String],
   desc: String,
+  category: String,
 });
 
 const promoCodesSchema = mongoose.Schema({

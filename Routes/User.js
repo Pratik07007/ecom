@@ -62,5 +62,18 @@ app.get("/allProducts", async (req, res) => {
     res.status(400).json({ msg: "Something went wrong" });
   }
 });
+app.get("/hello", async (req, res) => {
+  try {
+    const category = req.query.q;
+    const products = await AllProducts.find({ category });
+    if (products.length == 0) {
+      res.status(200).json({ msg: "No Product in this category" });
+    } else {
+      res.json({ products });
+    }
+  } catch (error) {
+    res.status(400).json({ msg: "Something went wrong" });
+  }
+});
 
 app.listen(PORT);
