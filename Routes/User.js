@@ -6,6 +6,8 @@ const app = express();
 
 app.use(express.json());
 
+const PORT = process.env.PORT || 3000;
+
 app.post("/userRegister", userCredentialsValidiation, async (req, res) => {
   const { name, phone, email, password } = req.body;
   const response = await user.findOne({ email });
@@ -46,4 +48,4 @@ app.get("/promos", (req, res) => {
     }
   });
 
-app.listen(3000);
+app.listen(PORT);

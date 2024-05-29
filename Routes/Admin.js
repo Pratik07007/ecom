@@ -6,6 +6,8 @@ const app = express();
 
 app.use(express.json());
 
+const PORT = process.env.PORT || 3000;
+
 app.post("/adminRegister", adminCredentialsValidiation, async (req, res) => {
   const { email, password } = req.body;
   const respone = await admin.findOne({ email });
@@ -23,7 +25,7 @@ app.post("/adminLogin", async (req, res) => {
   try {
     const response = await admin.findOne({ email, password });
     if (response) {
-      const token = jwt.sign({ email }, "12345");
+      const token = jwt.sign({ email }, process.env.JWTSECRET);
       res.status(200).json({ token });
     } else {
       res.status(203).json({ msg: "Invalid email or password" });
@@ -54,4 +56,4 @@ app.post("/addPromo", async (req, res) => {
 
 
 
-app.listen(3000);
+app.listen(PORT);

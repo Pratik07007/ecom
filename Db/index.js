@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 //Databse Connection
 
 try {
-  mongoose.connect("mongodb+srv://np03cs4a230180:9AZhbah9y2aQDrrZ@pratikcluster.xg6nhfe.mongodb.net/ecom");
+  mongoose.connect(process.env.DB_STRING);
   console.log("Database Connection Success!");
 } catch (error) {
   console.log(`Database Connection Success! ${error}`);
