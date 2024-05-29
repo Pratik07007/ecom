@@ -36,7 +36,7 @@ app.post("/adminLogin", async (req, res) => {
 });
 
 app.post("/addPromo", async (req, res) => {
-  const { cappedAt, code, discount, minspend } = req.body;
+  const { cappedAt, code, discount, minspend, until } = req.body;
   const token = req.headers.authorization;
   try {
     const email = jwt.verify(token, process.env.JWT_SECRET).email;
@@ -48,6 +48,7 @@ app.post("/addPromo", async (req, res) => {
       } else {
         promo
           .create({
+            until,
             cappedAt,
             code,
             discount,

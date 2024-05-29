@@ -36,6 +36,7 @@ const promoCodesSchema = mongoose.Schema({
   discount: Number,
   cappedAt: Number,
   minspend: Number,
+  until: Number,
 });
 
 //creating model
