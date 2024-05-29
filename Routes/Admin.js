@@ -25,7 +25,7 @@ app.post("/adminLogin", async (req, res) => {
   try {
     const response = await admin.findOne({ email, password });
     if (response) {
-      const token = jwt.sign({ email }, process.env.JWTSECRET);
+      const token = jwt.sign({ email }, process.env.JWT_SECRET);
       res.status(200).json({ token });
     } else {
       res.status(203).json({ msg: "Invalid email or password" });
@@ -37,23 +37,32 @@ app.post("/adminLogin", async (req, res) => {
 
 app.post("/addPromo", async (req, res) => {
   const { cappedAt, code, discount, minspend } = req.body;
-  const response = await promo.findOne({ code });
-  if (response) {
-    res.status(400).json({ msg: `Code:${code} already exist` });
-  } else {
-    promo
-      .create({
-        cappedAt,
-        code,
-        discount,
-        minspend,
-      })
-      .then(() =>
-        res.status(400).json({ msg: `Code:${code} added succesfully` })
-      );
+  const token = req.headers.authorization;
+  try {
+    const email = jwt.verify(token, process.env.JWT_SECRET).email;
+    const dbResponse = admin.findOne({ email });
+    if (dbResponse) {
+      const promos = await promo.findOne({ code });
+      if (promos) {
+        res.status(400).json({ msg: `Code:${code} already exist` });
+      } else {
+        promo
+          .create({
+            cappedAt,
+            code,
+            discount,
+            minspend,
+          })
+          .then(() =>
+            res.status(400).json({ msg: `Code:${code} added succesfully` })
+          );
+      }
+    }
+  } catch (error) {
+    res.json({
+      msg: "Permission Denied: You need to be an admin to perform this task",
+    });
   }
 });
-
-
 
 app.listen(PORT);

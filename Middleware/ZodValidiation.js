@@ -43,9 +43,8 @@ const userCredentialsValidiation = (req, res, next) => {
   if (response.success) {
     next();
   } else {
-    // res.status(400).json({ error: response.error.issues[0].message });
-    res.status(400).json({ error: response });
-
+    res.status(400).json({ error: response.error.issues[0].message });
+    // res.status(400).json({ error: response });
   }
 };
 

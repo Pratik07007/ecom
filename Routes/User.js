@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const { userCredentialsValidiation } = require("../middleware/ZodValidiation");
-const { user,promo } = require("../Db");
+const { user, promo } = require("../Db");
 const app = express();
 
 app.use(express.json());
@@ -40,12 +40,18 @@ app.post("/userLogin", async (req, res) => {
   }
 });
 
-app.get("/promos", (req, res) => {
-    try {
-      promo.find({}).then((resp) => res.json(resp));
-    } catch (error) {
-      res.status(403).json({ msg: "Something Went Wrong" });
+app.get("/promos/:code", async (req, res) => {
+  const code = req.params.code;
+  try {
+    const response = await promo.findOne({ code });
+    if (response) {
+      res.json({ promo:response });
+    } else {
+      res.status(403).json({ msg: "Invalid Promo code" });
     }
-  });
+  } catch (error) {
+    res.status(403).json({ msg: "Something Went Wrong" });
+  }
+});
 
 app.listen(PORT);
