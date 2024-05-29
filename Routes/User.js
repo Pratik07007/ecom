@@ -62,7 +62,8 @@ app.get("/allProducts", async (req, res) => {
     res.status(400).json({ msg: "Something went wrong" });
   }
 });
-app.get("/hello", async (req, res) => {
+
+app.get("/category", async (req, res) => {
   try {
     const category = req.query.q;
     const products = await AllProducts.find({ category });
