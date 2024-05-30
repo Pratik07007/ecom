@@ -6,6 +6,13 @@ const app = express();
 
 app.use(express.json());
 
+const corsOptions = {
+  credentials: true,
+  origin: ['http://localhost:5173'] 
+};
+
+app.use(cors(corsOptions)); 
+
 const PORT = process.env.PORT || 3000;
 
 app.post("/adminRegister", adminCredentialsValidiation, async (req, res) => {

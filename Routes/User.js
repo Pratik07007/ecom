@@ -3,8 +3,17 @@ const jwt = require("jsonwebtoken");
 const { userCredentialsValidiation } = require("../middleware/ZodValidiation");
 const { user, promo, AllProducts } = require("../Db");
 const app = express();
+const cors = require("cors")
 
 app.use(express.json());
+
+const corsOptions = {
+  credentials: true,
+  origin: ['http://localhost:5173'] 
+};
+
+app.use(cors(corsOptions)); 
+
 
 const PORT = process.env.PORT || 3000;
 
