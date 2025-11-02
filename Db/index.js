@@ -1,53 +1,197 @@
-const mongoose = require("mongoose");
+const { Sequelize, DataTypes } = require("sequelize");
+require("dotenv").config();
 
-//Databse Connection
-
-try {
-  mongoose.connect(process.env.DB_STRING);
-  console.log("Database Connection Success!");
-} catch (error) {
-  console.log(`Database Connection Success! ${error}`);
-}
-
-//Defining Schema
-
-const adminSchema = mongoose.Schema({
-  email: String,
-  password: String,
+// Database Connection
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "postgres",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+  logging: false,
 });
 
-const userSchema = mongoose.Schema({
-  name: String,
-  phone: String,
-  email: String,
-  password: String,
+// Test the connection
+const testConnection = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Database Connection Success!");
+  } catch (error) {
+    console.error(`Database Connection Failed: ${error}`);
+  }
+};
+
+testConnection();
+
+// Define Models
+const Admin = sequelize.define("Admin", {
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
-const allProductsSchema = mongoose.Schema({
-  name: String,
-  originalPrice: Number,
-  discountedPrice: Number,
-  images: [String],
-  desc: String,
-  category: String,
+const User = sequelize.define("User", {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  phone: {
+    type: DataTypes.STRING,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
-const promoCodesSchema = mongoose.Schema({
-  code: String,
-  discount: Number,
-  cappedAt: Number,
-  minspend: Number,
-  until: Number,
+const Product = sequelize.define("Product", {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  originalPrice: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  discountedPrice: {
+    type: DataTypes.FLOAT,
+  },
+  images: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+  },
+  desc: {
+    type: DataTypes.TEXT,
+  },
+  category: {
+    type: DataTypes.STRING,
+  },
+  stock: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
 });
 
-//creating model
+const PromoCode = sequelize.define("PromoCode", {
+  code: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  discount: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  cappedAt: {
+    type: DataTypes.FLOAT,
+  },
+  minspend: {
+    type: DataTypes.FLOAT,
+  },
+  until: {
+    type: DataTypes.DATE,
+  },
+});
 
-const AllProducts = mongoose.model("Products", allProductsSchema);
+// New models for enhanced functionality
+const Order = sequelize.define("Order", {
+  total: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  status: {
+    type: DataTypes.ENUM(
+      "pending",
+      "processing",
+      "shipped",
+      "delivered",
+      "cancelled"
+    ),
+    defaultValue: "pending",
+  },
+  shippingAddress: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  paymentMethod: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  promoApplied: {
+    type: DataTypes.STRING,
+  },
+  discountAmount: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0,
+  },
+});
 
-const admin = mongoose.model("Admin", adminSchema);
+const OrderItem = sequelize.define("OrderItem", {
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  price: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+});
 
-const user = mongoose.model("User", userSchema);
+const Review = sequelize.define("Review", {
+  rating: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 1,
+      max: 5,
+    },
+  },
+  comment: {
+    type: DataTypes.TEXT,
+  },
+});
 
-const promo = mongoose.model("Promo", promoCodesSchema);
+// Define relationships
+User.hasMany(Order);
+Order.belongsTo(User);
 
-module.exports = { AllProducts, admin, user, promo };
+Order.hasMany(OrderItem);
+OrderItem.belongsTo(Order);
+
+Product.hasMany(OrderItem);
+OrderItem.belongsTo(Product);
+
+User.hasMany(Review);
+Review.belongsTo(User);
+
+Product.hasMany(Review);
+Review.belongsTo(Product);
+
+// Sync all models with database
+sequelize
+  .sync()
+  .then(() => console.log("All models were synchronized successfully."))
+  .catch((err) => console.error("Error synchronizing models:", err));
+
+module.exports = {
+  sequelize,
+  Admin,
+  User,
+  Product,
+  PromoCode,
+  Order,
+  OrderItem,
+  Review,
+};

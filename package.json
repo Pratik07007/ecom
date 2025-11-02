@@ -5,17 +5,22 @@
   "main": "index.js",
   "scripts": {
     "admin": "npx nodemon --env-file=.env ./Routes/Admin.js",
-    "user": "npx nodemon --env-file=.env ./Routes/User.js"
+    "user": "npx nodemon --env-file=.env ./Routes/User.js",
+    "start": "node server.js",
+    "dev": "npx nodemon --env-file=.env server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.5",
     "nodemon": "^3.1.0",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7",
     "zod": "^3.23.8"
   }
 }
